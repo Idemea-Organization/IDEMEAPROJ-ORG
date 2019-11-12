@@ -1,0 +1,348 @@
+<aura:component controller="TM_OppOferringController"  implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="wrpOppOff" type="Offering__c[]" />
+    <aura:attribute name="wrpOppOffDetails" type="Offering__c[]" />
+    <aura:attribute name="wrpOppOfffeatureDetails" type="List" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="screen" type="String" default="home"/>
+    <aura:attribute name="hideDeatils" type="boolean" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <ltng:require styles="{! $Resource.	DataTables + '/DataTables-1.10.16/media/css/jquery.dataTables.min.css'}" 
+                  scripts="{!join(',', 
+                           $Resource.jquery224 , 
+                           $Resource.DataTables + '/DataTables-1.10.16/media/js/jquery.dataTables.min.js')
+                           }" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+    
+    
+    
+    <aura:if isTrue="{!v.screen=='home'}">
+        <div class="slds-box" aura:id='offDetailId'>
+            
+            <fieldset class="slds-box slds-theme--default slds-container--XX-large">
+                
+                <legend id="newCampaingForm" class="slds-text-heading--large 
+                                                    slds-p-vertical--large" style="text-align: center;">
+                    Add Offerings
+                </legend>
+                <aura:if isTrue="{!v.wrpOppOff.length>0}">
+                    <p>
+                        <table Id="CertIds" class=" CertIds mycustom slds-table slds-table_cell-buffer slds-table_bordered ">
+                            <thead>
+                                <tr class="">
+                                    <th class="" scope="col" style="width: fit-content;">
+                                        
+                                    </th> 
+                                    <th class="" scope="col">
+                                        <div  title="Certification Name">Offering Name</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div  title="Certification Name" >Product Code</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div  title="Certification Name">Quantity Unit Of Measure</div>
+                                    </th>
+                                    <th  >
+                                        <div  title="Certification Name"  >Description </div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div  title="Certification Name">Offering Family </div>
+                                    </th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody> 
+                                <aura:iteration items="{!v.wrpOppOff}" var="obj" indexVar="rowIndex2">
+                                    <tr>
+                                        
+                                        <td scope="row" class="slds-text-align--right" style="width:3.25rem;">
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <label class="slds-checkbox">
+                                                        
+                                                        <ui:inputCheckbox text="{!obj.Offering.Id}" class="checkbox2" aura:id="check"  value="{!obj.isChecked}" change="{!c.onCheck}" />
+                                                        <span class="slds-checkbox--faux"></span>
+                                                        <span class="slds-form-element__label text"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 175px;">
+                                                <a  href="{!'/'+obj.Offering.Id}">{!obj.Offering.Name}</a> 
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 175px;">
+                                                {!obj.Offering.Product_Code__c}
+                                                
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 175px;">
+                                                {!obj.Offering.Quantity_Unit_Of_Measure__c}
+                                                
+                                            </div>      
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 175px;margin-top: -18px;"><br/>
+                                                {!obj.Offering.Description__c}
+                                                
+                                            </div>       
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 175px;">
+                                                {!obj.Offering.Offering_Family__c}
+                                                
+                                            </div>
+                                        </td>
+                                        
+                                    </tr>
+                                </aura:iteration>
+                                
+                            </tbody>
+                        </table>
+                        
+                    </p>
+                    
+                    <div style="margin-left: 50%;margin-top: 13px;">
+                        <button aura:id="nextBtnFunc" style="" class="slds-button slds-button_brand slds-hide" onclick="{!c.onOffAction}">Next</button>
+                    </div>
+                </aura:if>
+            </fieldset>
+        </div>
+    </aura:if>
+    <!-- ======================1============================== -->
+    <aura:if isTrue="{!v.screen=='secscreen'}">
+        
+        <fieldset class="slds-box slds-theme--default slds-container--XX-large">
+            <div>
+            <legend id="newCampaingForm" class="slds-text-heading--large 
+                                                slds-p-vertical--large" style="text-align: center;">
+                Add Offerings
+            </legend>
+                </div>
+            <div style="margin-top: 13px;text-align: center;">
+              <!--  <lightning:button variant="success" label="Save" title="Success" onclick="{!c.handleSave }" />-->
+                <button aura:id="nextBtn" class="slds-button slds-button_brand" onclick="{!c.prevAction}">Previous</button>
+                <button aura:id="nextBtn1"  class="slds-button slds-button_brand"  onclick="{!c.onOfffeatureNextAction}">Next</button>
+            </div><br/>
+            <aura:if isTrue="{!v.wrpOppOffDetails.length>0}">
+                <p>
+                    <table Id="CertIds" class=" CertIds mycustom slds-table slds-table_cell-buffer slds-table_bordered ">
+                        <thead>
+                            <lightning:recordEditForm>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col"><div>Sr.No</div></th>
+                                    <th class="" scope="col"><div style="width: 170px;margin-left: 100px;"> Offering Name</div></th>
+                                    <th class="" scope="col"><div style="width: 180px;margin-left: 5px;">Quantity</div></th>
+                                    <th class="" scope="col"><div  style="width: 180px;margin-left: 5px;">Sales Price</div></th>
+                                    <th class="" scope="col"  ><div style="width: 180px;margin-left:5px;">Date</div></th>
+                                    <th class="" scope="col"><div>Line Description</div></th>                    
+                                    <th class="slds-text-title_caps">
+                                        
+                                    </th> 
+                                </tr>
+                            </lightning:recordEditForm>
+                        </thead>
+                        <tbody> 
+                            <aura:iteration items="{!v.wrpOppOffDetails}" var="obj" indexVar="rowIndex2">
+                                <lightning:recordEditForm  objectApiName="Offering__c" recordId="{!obj.Offering.Id}" >  
+                                    <tr>
+                                        
+                                        <td scope="row" class="slds-text-align--right" style="width:3.25rem;">
+                                            <div style="width: 135px;text-align: left;">      {!rowIndex2+1}</div>
+                                            <!--    <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                            <label class="slds-checkbox">
+                                                                
+                                                                <ui:inputCheckbox  class="checkbox2" aura:id="check"  value="{!obj.isCheckedOpOff}" change="{!c.onCheckOpOff}" />
+                                                                <span class="slds-checkbox-faux"></span>
+                                                                <span class="slds-form-element__label text"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>-->
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none;" >
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Name" value="{!obj.Offering.Name}" />
+                                            </div>
+                                           <div style="width: 180px;" >
+                                               {!obj.Offering.Name}
+                                            </div>
+                                        </td>
+                                        
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none ">
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Quantity__c" value="{!obj.Offering.Quantity__c}" />
+                                            </div>  
+                                            <div style="width: 180px;white-space: normal">
+                                             {!obj.Offering.Quantity__c}
+                                            </div>  
+                                        </td>
+                                        
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none">
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Sales_Price__c" value="{!obj.Offering.Sales_Price__c}" />
+                                            </div>
+                                             <div style="width: 180px;white-space: normal">
+                                               {!obj.Offering.Sales_Price__c}
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none">
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Date__c" value="{!obj.Offering.Date__c}" />
+                                            </div>
+                                             <div style="width: 180px;white-space: normal">
+                                               {!obj.Offering.Date__c}
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 230px;margin-top: -18px;"><br/>
+                                                <lightning:inputField variant="label-hidden" fieldName="Description__c" value="{!obj.Offering.Description__c}" />
+                                            </div>
+                                        </td>
+                                        <td> 
+                                            <!-- <lightning:icon iconName="action:delete" size="xx-small"  id="{!rowIndex2}" title="{!rowIndex2}" onclick="{!c.removeRow}"/>-->
+                                            <button  class="slds-button slds-button_destructive" id="{!rowIndex2}" onclick="{!c.removeRow}"> Delete </button>
+                                        </td>
+                                        
+                                    </tr>
+                                </lightning:recordEditForm>
+                            </aura:iteration>
+                            
+                        </tbody>
+                    </table>
+                    
+                </p>
+                <div style="margin-top: 13px;text-align: center;">
+                  <!--  <lightning:button variant="success" label="Save" title="Success" onclick="{!c.handleSave }" />-->
+                    <button aura:id="nextBtn" class="slds-button slds-button_brand" onclick="{!c.prevAction}">Previous</button>
+                    <button aura:id="nextBtn1"  class="slds-button slds-button_brand"  onclick="{!c.onOfffeatureNextAction}">Next</button>
+                </div>
+            </aura:if>
+        </fieldset>
+        
+    </aura:if>    
+    <!-- ===========================2========================= -->
+    <aura:if isTrue="{!v.screen=='thirdscreen'}">
+        
+        
+        
+        
+         <fieldset class="slds-box slds-theme--default slds-container--XX-large">
+            <div>
+            <legend id="newCampaingForm" class="slds-text-heading--large 
+                                                slds-p-vertical--large" style="text-align: center;">
+               Features
+            </legend>
+                </div>
+            <div style="margin-top: 13px;text-align: center;">
+              <lightning:button variant="success" label="Save" title="Success" onclick="{!c.handleSaveFeature }" />
+                        <button aura:id="nextBtn" class="slds-button slds-button_brand" onclick="{!c.prevFeatureActions}">Previous</button>
+            </div><br/>
+            <aura:if isTrue="{!v.wrpOppOfffeatureDetails.length>0}">
+                <p>
+                    <table Id="CertIds" class=" CertIds mycustom slds-table slds-table_cell-buffer slds-table_bordered ">
+                        <thead>
+                            <lightning:recordEditForm>
+                                <tr class="slds-line-height_reset">
+                                   
+                                    <th class="" scope="col"><div>Sr.No</div></th>
+                                    <th class="" scope="col"><div style="width: 170px;margin-left: 100px;">  Feature Name</div></th>
+                                    <th class="" scope="col"><div style="width: 180px;margin-left: 5px;">Description</div></th>
+                                    <th class="" scope="col" ><div style="width: 180px;margin-left: 5px;">Estimated Delivery Date</div></th>
+                                    <th class="" scope="col"><div style="width: 180px;margin-left: 5px;">Feature Status</div></th>
+                                    <th class="" scope="col"><div>Required Level</div></th>                    
+                                    <th class="slds-text-title_caps">
+                                        
+                                    </th> 
+                                </tr>
+                            </lightning:recordEditForm>
+                        </thead>
+                        <tbody> 
+                            <aura:iteration items="{!v.wrpOppOfffeatureDetails}" var="obj1">
+                                
+                                <aura:if isTrue="{!obj1.featureList.length>0}"> <b> Offering Name:  {!obj1.Offering.Name}</b></aura:if>
+                                        <aura:iteration items="{!obj1.featureList}" var="obj" indexVar="rowIndex2">
+                                            
+                                            
+                                            <lightning:recordEditForm  objectApiName="Feature__c" recordId="{!obj.Id}" >    
+                                    <tr>
+                                        
+                                        <td scope="row" class="slds-text-align--right" style="width:3.25rem;">
+                                            <div style="width: 135px;text-align: left;white-space: normal">      {!rowIndex2+1}</div>
+                                            <!--    <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                            <label class="slds-checkbox">
+                                                                
+                                                                <ui:inputCheckbox  class="checkbox2" aura:id="check"  value="{!obj.isCheckedOpOff}" change="{!c.onCheckOpOff}" />
+                                                                <span class="slds-checkbox-faux"></span>
+                                                                <span class="slds-form-element__label text"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>-->
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none;">
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Name" value="{!obj.Name}" />
+                                            </div>
+                                            <div style="width: 180px;white-space: normal">
+                                              {!obj.Name}
+                                            </div>
+                                        </td>
+                                        
+                                        <td scope="row">
+                                            <div style="width: 180px;margin-top: -19px;display:none"><br/>
+                                              <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Feature_Description__c" value="{!obj.Feature_Description__c}" />
+                                            </div>  
+                                                  <div style="width: 180px;white-space: normal;margin-top: -19px;"><br/>
+                                            {!obj.Feature_Description__c}
+                                            </div> 
+                                        </td>
+                                        
+                                        <td scope="row">
+                                             <div style="width: 180px; display:none" >
+                                               <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Estimated_Delivery_Date__c" value="{!obj.Estimated_Delivery_Date__c}" />
+                                            </div>
+                                            <div style="width: 180px;white-space: normal">
+                                                {!obj.Estimated_Delivery_Date__c}
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none" >
+                                                <lightning:inputField   disabled="true" variant="label-hidden" fieldName="Feature_Status__c" value="{!obj.Feature_Status__c}" />
+                                            </div>
+                                             <div style="width: 180px;white-space: normal" >
+                                               {!obj.Feature_Status__c}
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 230px;margin-top: -18px;">
+                                               <lightning:inputField variant="label-hidden" fieldName="Required_Level__c" value="{!obj.Required_Level__c}" />
+                                            </div>
+                                        </td>
+                                        <td> 
+                                            <!-- <lightning:icon iconName="action:delete" size="xx-small"  id="{!rowIndex2}" title="{!rowIndex2}" onclick="{!c.removeRow}"/>-->
+                                            <button  class="slds-button slds-button_destructive" id="{!rowIndex2}" title="{!obj1.Offering.Id}"  onclick="{!c.removeRowFeature}"> Delete </button>
+                                        </td>
+                                        
+                                    </tr>
+                                </lightning:recordEditForm>
+                            </aura:iteration>
+                            </aura:iteration>                            
+                        </tbody>
+                    </table>
+                    
+                </p>
+                <div style="margin-top: 13px;text-align: center;">
+                    <lightning:button variant="success" label="Save" title="Success" onclick="{!c.handleSaveFeature }" />
+                        <button aura:id="nextBtn" class="slds-button slds-button_brand" onclick="{!c.prevFeatureActions}">Previous</button>
+                </div>
+            </aura:if>
+        </fieldset>
+        
+       
+    </aura:if>   
+    
+    
+    
+</aura:component>

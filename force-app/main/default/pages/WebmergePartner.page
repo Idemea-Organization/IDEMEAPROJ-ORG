@@ -1,0 +1,5 @@
+<apex:page standardController="TM_GovSuite__FC_Partner__c" docType="html-5.0" title="Webmerge GovCon Opportunity: {!TM_GovSuite__FC_Partner__c.Name}">
+
+    <webm:WebmergeWizard record="{!TM_GovSuite__FC_Partner__c}" />
+    
+</apex:page>
