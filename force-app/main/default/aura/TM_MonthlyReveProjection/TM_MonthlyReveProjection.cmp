@@ -1,0 +1,128 @@
+<!--
+/*************************************************************************************** 
+* Copyright (C) 2019   
+* Technomile LLC    
+* All Rights Reserved      
+*
+* Name          :    	TM_MonthlyReveProjectionController
+* TestClass Name:      Test_TM_MonthlyReveProjectionController
+* Trigger Name  :   	Name of trigger
+* Purpose       :    	Update & delete monthly revenue projection. 
+* History       :                                                                           
+*************************************************************************************   
+* Ver      Created Date            Employee Id                 Description 
+*                                      
+* 1.0      11/14/2019               181024                   Initial Creation      
+**************************************************************************************/
+-->
+
+
+<aura:component controller="TM_MonthlyReveProjectionController"  implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="prvenuProjList" type="List" />
+    <aura:attribute name="recordId" type="String" />
+   
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <ltng:require styles="{! $Resource.	DataTables + '/DataTables-1.10.16/media/css/jquery.dataTables.min.css'}" 
+                  scripts="{!join(',', 
+                           $Resource.jquery224 , 
+                           $Resource.DataTables + '/DataTables-1.10.16/media/js/jquery.dataTables.min.js')
+                           }" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+    
+    <!-- ======================1============================== -->
+ 
+        
+        <fieldset class="slds-box slds-theme--default slds-container--XX-large">
+            <div>
+                <legend id="newCampaingForm" class="slds-text-heading--large 
+                                                    slds-p-vertical--large" style="text-align: center;">
+                    Opportunity Offering
+                </legend>
+            </div>
+            <div style="margin-top: 13px;text-align: center;">
+               <button class="slds-button slds-button_brand" onclick="{!c.handleSave}">Save</button>
+           
+            </div><br/>
+             <aura:if isTrue="{!v.prvenuProjList.length==0}">
+                  <h2 style=" text-align: center;font-size: large;">Table has no data</h2>
+             </aura:if>
+            
+            <aura:if isTrue="{!v.prvenuProjList.length>0}">
+                <p>
+                    <table  class=" mycustom slds-table slds-table_cell-buffer slds-table_bordered ">
+                        <thead>
+                            <lightning:recordEditForm>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col"><div>Sr.No</div></th>
+                                    <th class="" scope="col"><div style="width: 230px;margin-left: 100px;">Growth Opportunity Name</div></th>
+                                    <th class="" scope="col"><div style="width: 200px;margin-left: 5px;">Actual Revenue Amount</div></th>
+                                    <th class="" scope="col"><div  style="width: 250px;margin-left: 5px;">Month Start Date</div></th>
+                                    <th class="" scope="col"  ><div style="width: 180px;margin-left:5px;">POP End Date</div></th>
+                                    <th class="" scope="col"><div>POP Start Date</div></th>                    
+                                    <th class="slds-text-title_caps">
+                                        
+                                    </th> 
+                                </tr>
+                            </lightning:recordEditForm>
+                        </thead>
+                        <tbody> 
+                            <aura:iteration items="{!v.prvenuProjList}" var="obj" indexVar="rowIndex2">
+                                <lightning:recordEditForm  objectApiName="Revenue_Forecast__c" recordId="{!obj.Id}" >  
+                                    <tr>
+                                         
+                                       <td scope="row" class="slds-text-align-right" style="width:3.25rem;">
+                                            <div style="width: 135px;text-align: left;">      {!rowIndex2+1}</div>
+                                          
+                                        </td>
+                                        <td scope="row"> 
+                                           <div style="width: 230px;">
+                                                <a  href="{!'/'+obj.Growth_Opportunity__c}">{!obj.Growth_Opportunity__r.Name}</a> 
+                                            </div>
+                                        </td>
+                                        
+                                        <td scope="row">
+                                            <div style="width: 205px;">
+                                                <lightning:inputField  variant="label-hidden" fieldName="Actual_Revenue_Amount__c" value="{!obj.Actual_Revenue_Amount__c}" />
+                                            </div>  
+                                           
+                                        </td>
+                                         
+                                        <td scope="row">
+                                            <div style="width: 250px;">
+                                                <lightning:inputField  variant="label-hidden" fieldName="Month_Start_Date__c" value="{!obj.Month_Start_Date__c}" />
+                                            </div>
+                                            
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;">
+                                                <lightning:inputField   variant="label-hidden" fieldName="POP_End_Date__c" value="{!obj.POP_End_Date__c}" />
+                                            </div>
+                                            
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 230px;margin-top: -18px;"><br/>
+                                                <lightning:inputField variant="label-hidden" fieldName="POP_Start_Date__c" value="{!obj.POP_Start_Date__c}" />
+                                            </div>
+                                        </td>
+                                        <td> 
+                                            <!-- <lightning:icon iconName="action:delete" size="xx-small"  id="{!rowIndex2}" title="{!rowIndex2}" onclick="{!c.removeRow}"/>-->
+                                            <button  class="slds-button slds-button_destructive" id="{!rowIndex2}" title="{!obj.Id}" value=""   onclick="{!c.removeRow}"> Delete </button>
+                                        </td>
+                                        
+                                    </tr>
+                                </lightning:recordEditForm>
+                            </aura:iteration>
+                            
+                        </tbody>
+                    </table>
+                    
+                </p>
+               
+            </aura:if>
+             <div style="margin-top: 13px;text-align: center;">
+                  <button class="slds-button slds-button_brand" onclick="{!c.handleSave}">Save</button>
+                
+                </div>
+        </fieldset>
+
+   
+</aura:component>

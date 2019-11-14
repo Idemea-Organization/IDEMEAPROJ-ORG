@@ -20,12 +20,15 @@ public with sharing class Test_TM_OppOferringController {
         featuList.add(featuObj);
         
         
-        
+         List<Opportunity_Offering__c> oppOffList = new List<Opportunity_Offering__c>();
         Opportunity_Offering__c OppOffObj = new Opportunity_Offering__c();
         OppOffObj.Offering__c=offObj.Id;
         OppOffObj.Growth_Opportunity__c=opp.Id;
         //OppOffObj.Name='test';
         insert OppOffObj;
+        oppOffList.add(OppOffObj);
+         String str2=   JSON.serialize(oppOffList);
+        
         
         
         TM_OppOferringController.OppOferringWrapper wrepperObj= new TM_OppOferringController.OppOferringWrapper();
@@ -55,8 +58,8 @@ public with sharing class Test_TM_OppOferringController {
         TM_OppOferringController.getSelectdFeatures(str, opp.Id);
         TM_OppOferringController.saveOffering(str,opp.Id);
         TM_OppOferringController.getSelectdOffering(str,opp.Id);
-        TM_OppOferringController.getSelectdOfferingFeatures(str,opp.Id);
-       TM_OppOferringController.saveOfferingFeatures(str1,opp.Id);
+       // TM_OppOferringController.getSelectdOfferingFeatures(str,opp.Id);
+       TM_OppOferringController.saveOfferingFeatures(str1,opp.Id,str2);
         TM_OppOferringController.getSelectdFeatures(str, opp.Id);
          test.stopTest();
     }
