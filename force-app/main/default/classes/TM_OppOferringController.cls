@@ -1,3 +1,18 @@
+/*************************************************************************************** 
+* Copyright (C) 2019   
+* Technomile LLC    
+* All Rights Reserved      
+*
+* Name          :    	TM_OppOferringController
+* TestClass Name:       Test_TM_OppOferringController
+* Trigger Name  :   	Name of trigger
+* Purpose       :    	Save & update the features related to offering in opportunity_Offering junc obj. 
+* History       :                                                                           
+*************************************************************************************   
+* Ver      Created Date            Employee Id                 Description 
+*                                      
+* 1.0      10/28/2019               181024                   Initial Creation      
+**************************************************************************************/
 public class TM_OppOferringController {
     @AuraEnabled
     public static List<OppOferringWrapper> oppWrapList {get;set;}
@@ -43,7 +58,7 @@ public class TM_OppOferringController {
         List<Offering__c> offList;
         List<OppOferringWrapper> oppWrapList = new List<OppOferringWrapper>();
         if(!IdList.isempty()){
-            offList=[SELECT Id ,Name,Product_Code__c,Description__c,Offering_Family__c,Date__c,Sales_Price__c,Quantity_Unit_Of_Measure__c,Quantity__c FROM Offering__c  Where Id In:IdList] ;
+            offList=[SELECT Id ,Name,Product_Code__c,Offering_Family__c FROM Offering__c  Where Id In:IdList] ;
         }
         
         if (!offList.isEmpty()) {
@@ -59,10 +74,8 @@ public class TM_OppOferringController {
     }
     
     @AuraEnabled
-    public static void saveOffering(String WrapperString,String recId){
-        
+    public static  List<Opportunity_Offering__c> saveOffering(String WrapperString,String recId){ 
         List<OppOferringWrapper> WraperPerList=(List<OppOferringWrapper>)System.JSON.deserialize(WrapperString,List<OppOferringWrapper>.class);
-        
         List<Opportunity_Offering__c> offList= new  List<Opportunity_Offering__c>();
         try { 
             if(recId !=null){
@@ -86,7 +99,7 @@ public class TM_OppOferringController {
         } catch(DmlException e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
         }
-        
+        return offList;
         /*  List<Opportunity_Offering__c> Instance =new List<Opportunity_Offering__c>();
 if(offList.size()>0 ){
 Instance =[SELECT Id  FROM Opportunity_Offering__c WHERE Id NOT IN :offList and Growth_Opportunity__c=:recId];
@@ -96,66 +109,78 @@ delete Instance;*/
     }
     
     
-     @AuraEnabled
-    public static  List<OppOferringWrapper> getSelectdOfferingFeatures(String WrapperString,String recId){
-        
-        List<OppOferringWrapper> WraperPerList=(List<OppOferringWrapper>)System.JSON.deserialize(WrapperString,List<OppOferringWrapper>.class);
-        System.debug('WraperPerList23==>>'+WraperPerList);
-        List<Id> IdList= new  List<Id>();
-        
-        if(recId !=null){
-            for(OppOferringWrapper b:WraperPerList)
-            {
-                
-                if(b.isCheckedOpOff == true){
-                    System.debug('b.isChecked333 '+b.isCheckedOpOff);
-                    IdList.add(b.Offering.Id);
-                      System.debug('IdList333 '+IdList);
-                }
-                
-            }
-        }
-        List<Feature__c> offList;
-        List<OppOferringWrapper> oppWrapList = new List<OppOferringWrapper>();
-        if(!IdList.isempty()){
-            offList=[SELECT Id ,Name,Estimated_Delivery_Date__c,Feature_Description__c,Feature_Status__c,Offering__c,Offering__r.Name,Required_Level__c FROM Feature__c  Where Offering__c In:IdList] ;
-        }
-        
-        if (!offList.isEmpty()) {
-            for (Feature__c oppOffObj: offList) {
-                OppOferringWrapper wrapObj = new OppOferringWrapper();
-                wrapObj.isCheckedOpOff = false;
-                wrapObj.feature = oppOffObj;
-                oppWrapList.add(wrapObj); 
-            }
-        }          
-        System.debug('oppWrapList33==>>'+oppWrapList);
-        return oppWrapList;
-    }
+    /*   @AuraEnabled
+public static  List<OppOferringWrapper> getSelectdOfferingFeatures(String WrapperString,String recId){
+
+List<OppOferringWrapper> WraperPerList=(List<OppOferringWrapper>)System.JSON.deserialize(WrapperString,List<OppOferringWrapper>.class);
+System.debug('WraperPerList23==>>'+WraperPerList);
+List<Id> IdList= new  List<Id>();
+
+if(recId !=null){
+for(OppOferringWrapper b:WraperPerList)
+{
+
+if(b.isCheckedOpOff == true){
+System.debug('b.isChecked333 '+b.isCheckedOpOff);
+IdList.add(b.Offering.Id);
+System.debug('IdList333 '+IdList);
+}
+
+}
+}
+List<Feature__c> offList;
+List<OppOferringWrapper> oppWrapList = new List<OppOferringWrapper>();
+if(!IdList.isempty()){
+offList=[SELECT Id ,Name,Estimated_Delivery_Date__c,Feature_Description__c,Feature_Status__c,Offering__c,Offering__r.Name,Required_Level__c FROM Feature__c  Where Offering__c In:IdList] ;
+}
+
+if (!offList.isEmpty()) {
+for (Feature__c oppOffObj: offList) {
+OppOferringWrapper wrapObj = new OppOferringWrapper();
+wrapObj.isCheckedOpOff = false;
+wrapObj.feature = oppOffObj;
+oppWrapList.add(wrapObj); 
+}
+}          
+System.debug('oppWrapList33==>>'+oppWrapList);
+return oppWrapList;
+}
+*/
     
-    
-      @AuraEnabled
-    public static void saveOfferingFeatures(String WrapperString,String recId){
-        
+    @AuraEnabled
+    public static void saveOfferingFeatures(String WrapperString,String recId,String oppOferingLst){
+        List<Opportunity_Offering__c> oppOffList=(List<Opportunity_Offering__c>)System.JSON.deserialize(oppOferingLst,List<Opportunity_Offering__c>.class);
         List<featureWrapper> WraperPerList=(List<featureWrapper>)System.JSON.deserialize(WrapperString,List<featureWrapper>.class);
         System.debug('WraperPerList//** '+WraperPerList);
+        System.debug('RecId: ' + recId);
+        System.debug('oppOffList//** '+oppOffList);
         List<Opportunity_Offering_Feature__c> offList= new  List<Opportunity_Offering_Feature__c>();
+        Map<String,String>  offSobjectMap = new Map<String,String>();
+        
+        
+        
         try { 
             if(recId !=null){
                 for(featureWrapper fw:WraperPerList)
                 {
                     for(Feature__c f:fw.featureList)
-                {
-                    Opportunity_Offering_Feature__c modObjObj=new Opportunity_Offering_Feature__c();
-                    //modObjObj.Id=b.Offering.Id;
-                    modObjObj.Growth_Opportunity__c=recId;
-                    modObjObj.Offering_Feature__c=f.Id;
-                    modObjObj.Required_Level__c = f.Required_Level__c;
-                    modObjObj.Feature_Status__c = f.Feature_Status__c;
-                    modObjObj.Feature_Description__c = f.Feature_Description__c;
-                    modObjObj.Estimated_Delivery_Date__c = f.Estimated_Delivery_Date__c;
-                    offList.add(modObjObj);
-                }
+                    {
+                        for(Opportunity_Offering__c offr :oppOffList ){
+                            if(offr.Offering__c==f.Offering__c && f.Required_Level__c != null && f.Required_Level__c != '' && f.Required_Level__c != null  ){
+                                Opportunity_Offering_Feature__c modObjObj=new Opportunity_Offering_Feature__c();
+                                //modObjObj.Id=b.Offering.Id;
+                                System.debug(recId);
+                                modObjObj.Growth_Opportunity__c=recId;
+                                modObjObj.Offering_Feature__c=f.Id;
+                                modObjObj.Opportunity_Offering__c= offr.Id;
+                                modObjObj.Required_Level__c = f.Required_Level__c;
+                                //modObjObj.Feature_Status__c = f.Feature_Status__c;
+                                modObjObj.Feature_Description__c = f.Feature_Description__c;
+                                modObjObj.Estimated_Delivery_Date__c = f.Estimated_Delivery_Date__c;
+                                
+                                offList.add(modObjObj);  
+                            }         
+                        }}
                 }
             }
             System.debug('offList33**'+offList);
@@ -178,18 +203,18 @@ delete Instance;*/
         public Opportunity_Offering__c oppOff {get;set;}
         @AuraEnabled
         public Offering__c Offering {get;set;}
-         @AuraEnabled
+        @AuraEnabled
         public Feature__c feature {get;set;}
-         @AuraEnabled
+        @AuraEnabled
         public Opportunity_Offering_Feature__c oppOffFeature {get;set;}
         @AuraEnabled
         public Boolean  isChecked;
-         @AuraEnabled
+        @AuraEnabled
         public Boolean  isCheckedOpOff;
         public OppOferringWrapper() {
             
-                 feature = new Feature__c();
-             Offering = new Offering__c();
+            feature = new Feature__c();
+            Offering = new Offering__c();
             oppOff = new Opportunity_Offering__c();
             oppOffFeature = new Opportunity_Offering_Feature__c();
             isChecked=false; 
@@ -199,20 +224,22 @@ delete Instance;*/
     
     
     
-     public class featureWrapper{
-
+    public class featureWrapper{
+        @AuraEnabled
+        public List<Opportunity_Offering__c> oppOffring {get;set;}
         @AuraEnabled
         public Offering__c Offering {get;set;}
-         @AuraEnabled
+        @AuraEnabled
         public List<Feature__c> featureList {get;set;}
-
+        
         public featureWrapper() {
-                 featureList = new List<Feature__c>();
-             Offering = new Offering__c();
+            oppOffring=new List<Opportunity_Offering__c>();
+            featureList = new List<Feature__c>();
+            Offering = new Offering__c();
         }
-     }
+    }
     
-     @AuraEnabled
+    @AuraEnabled
     public static  List<featureWrapper> getSelectdFeatures(String WrapperString,String recId){
         
         List<OppOferringWrapper> WraperPerList=(List<OppOferringWrapper>)System.JSON.deserialize(WrapperString,List<OppOferringWrapper>.class);
@@ -222,8 +249,8 @@ delete Instance;*/
         if(recId !=null){
             for(OppOferringWrapper b:WraperPerList)
             { 
-                    IdList.add(b.Offering.Id);
-                      System.debug('IdList333 '+IdList);
+                IdList.add(b.Offering.Id);
+                System.debug('IdList333 '+IdList);
             }
         }
         List<Feature__c> offList;
@@ -231,7 +258,7 @@ delete Instance;*/
         if(!IdList.isempty()){
             offList=[SELECT Id ,Name,Estimated_Delivery_Date__c,Feature_Description__c,Feature_Status__c,Offering__c,Offering__r.Name,Required_Level__c FROM Feature__c  Where Offering__c In:IdList] ;
         }
-         Offering__c  Offering ;
+        Offering__c  Offering ;
         if (!offList.isEmpty()) {
             for(Id IDobj:IdList)
             {
@@ -248,12 +275,10 @@ delete Instance;*/
                 wrapObj2.featureList=featureList;
                 oppWrapList.add(wrapObj2);
             }
-           
+            
         }  
-         System.debug('oppWrapList33==>>'+oppWrapList);
-             return oppWrapList;
+        System.debug('oppWrapList33==>>'+oppWrapList);
+        return oppWrapList;
     }
-    
-    
     
 }

@@ -11,8 +11,6 @@ public with sharing class GraphicsPackController {
     public Map<String, List<GraphicsPackImages__mdt>> mapiconshock32Images{get;set;}
     public String graphicSize{get;set;}
     
-   
-    
     public GraphicsPackController(){
         mapflags16Images = new Map<String, List<GraphicsPackImages__mdt>>();
         mapsilk16Images = new Map<String, List<GraphicsPackImages__mdt>>();

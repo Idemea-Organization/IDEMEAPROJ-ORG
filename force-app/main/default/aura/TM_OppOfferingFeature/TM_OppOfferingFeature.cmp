@@ -1,0 +1,133 @@
+<!--
+/*************************************************************************************** 
+* Copyright (C) 2019   
+* Technomile LLC    
+* All Rights Reserved      
+*
+* Name          :    	TM_SaveOppOffrFeature
+* TestClass Name:       Test_TM_SaveOppOffrFeature
+* Trigger Name  :   	Name of trigger
+* Purpose       :    	Save  the features related to offering in opportunity_Offering_feature junc obj. 
+* History       :                                                                           
+*************************************************************************************   
+* Ver      Created Date            Employee Id                 Description 
+*                                      
+* 1.0      11/12/2019               181024                   Initial Creation      
+**************************************************************************************/
+-->
+
+
+
+<aura:component  controller="TM_SaveOppOffrFeature"   implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="wrpOppOfffeatureDetails" type="List" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    <fieldset class="slds-box slds-theme-default slds-container-XX-large">
+        <div>
+            <legend id="newCampaingForm" class="slds-text-heading-large 
+                                                slds-p-vertical-large" style="text-align: center;font-size: x-large;">
+                Oppertunity Offering Features
+            </legend>
+        </div>
+        <div style="margin-top: 13px;text-align: center;">
+            <lightning:button variant="success" label="Save" title="Success" onclick="{!c.saveOppOffFeatu }" />
+            
+        </div><br/>
+        <aura:if isTrue="{!v.wrpOppOfffeatureDetails.length==0}">
+            <h2 style=" text-align: center;font-size: large;">Table has no data</h2>
+        </aura:if>
+        <aura:if isTrue="{!v.wrpOppOfffeatureDetails.length>0}">
+            <p>
+                <table Id="CertIds" class=" CertIds mycustom slds-table slds-table_cell-buffer slds-table_bordered ">
+                    <thead>
+                        <lightning:recordEditForm>
+                            <tr class="slds-line-height_reset">
+                                
+                                <th class="" scope="col"><div>Sr.No</div></th>
+                                <th class="" scope="col"><div style="width: 170px;margin-left: 100px;">Feature Name</div></th>
+                                <th class="" scope="col"><div style="width: 180px;margin-left: 5px;">Description</div></th>
+                                <th class="" scope="col" ><div style="width: 180px;margin-left: 5px;">Estimated Delivery Date</div></th>
+                                <th class="" scope="col"><div style="width: 180px;margin-left: 5px;">Feature Status</div></th>
+                                <th class="" scope="col"><div>Required Level</div></th>                    
+                                <th class="slds-text-title_caps">
+                                    
+                                </th> 
+                            </tr>
+                        </lightning:recordEditForm>
+                    </thead>
+                    <tbody> 
+                        <aura:iteration items="{!v.wrpOppOfffeatureDetails}" var="obj1">
+                            
+                            <aura:if isTrue="{!obj1.featureList.length>0}"> <b> Offering Name:  {!obj1.Offering.Name}</b></aura:if>
+                            <aura:iteration items="{!obj1.featureList}" var="obj" indexVar="rowIndex2">
+                                
+                                
+                                <lightning:recordEditForm  objectApiName="Feature__c" recordId="{!obj.Id}" >    
+                                    <tr>
+                                        
+                                        <td scope="row" class="slds-text-align-right" style="width:3.25rem;">
+                                            <div style="width: 135px;text-align: left;white-space: normal">      {!rowIndex2+1}</div>
+                                            
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none;">
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Name" value="{!obj.Name}" />
+                                            </div>
+                                            <div style="width: 180px;white-space: normal">
+                                                {!obj.Name}
+                                            </div>
+                                        </td>
+                                        
+                                        <td scope="row">
+                                            <div style="width: 180px;margin-top: -19px;display:none"><br/>
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Feature_Description__c" value="{!obj.Feature_Description__c}" />
+                                            </div>  
+                                            <div style="width: 180px;white-space: normal;margin-top: -19px;"><br/>
+                                                {!obj.Feature_Description__c}
+                                            </div> 
+                                        </td>
+                                        
+                                        <td scope="row">
+                                            <div style="width: 180px; display:none" >
+                                                <lightning:inputField  disabled="true" variant="label-hidden" fieldName="Estimated_Delivery_Date__c" value="{!obj.Estimated_Delivery_Date__c}" />
+                                            </div>
+                                            <div style="width: 180px;white-space: normal">
+                                                {!obj.Estimated_Delivery_Date__c}
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 180px;display:none" >
+                                                <lightning:inputField   disabled="true" variant="label-hidden" fieldName="Feature_Status__c" value="{!obj.Feature_Status__c}" />
+                                            </div>
+                                            <div style="width: 180px;white-space: normal" >
+                                                {!obj.Feature_Status__c}
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <div style="width: 230px;margin-top: -18px;">
+                                                <lightning:inputField variant="label-hidden" fieldName="Required_Level__c" value="{!obj.Required_Level__c}" />
+                                            </div>
+                                        </td>
+                                        <td> 
+                                            
+                                            <button  class="slds-button slds-button_destructive" id="{!rowIndex2}" title="{!obj1.Offering.Id}"  onclick="{!c.removeRowFeature}"> Delete </button>
+                                        </td>
+                                        
+                                    </tr>
+                                </lightning:recordEditForm>
+                            </aura:iteration>
+                        </aura:iteration>                            
+                    </tbody>
+                </table>
+                
+            </p>
+            <div style="margin-top: 13px;text-align: center;">
+                <lightning:button variant="success" label="Save" title="Success" onclick="{!c.saveOppOffFeatu }" />
+                
+            </div>
+        </aura:if>
+    </fieldset>
+    
+</aura:component>

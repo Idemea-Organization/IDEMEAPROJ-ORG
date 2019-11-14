@@ -120,16 +120,9 @@
       
     },
     onOfffeatureNextAction: function(component, event, helper) {
-        /* var offFeatureDetId = component.find('offFeatureDetailId');
-        var offChkBox = component.find('offDetailId');
-        var offDetail = component.find('offDetailId1');           
-        
-         $A.util.removeClass(offDetail, 'slds-show');
-         $A.util.addClass(offDetail, 'slds-hide');  
-         $A.util.removeClass(offFeatureDetId, 'slds-hide');
-          $A.util.addClass(offFeatureDetId, 'slds-show');*/
-        
-       $A.enqueueAction(component.get('c.handleSave'));      
+      
+     component.set("v.secScreenDataList",component.get("v.wrpOppOffDetails"));
+    
      var checkAllId = JSON.stringify(component.get("v.wrpOppOffDetails"));
          console.log('checkAllId******** ');
         console.log(checkAllId);
@@ -203,9 +196,11 @@
         
         component.set("v.wrpOppOffDetails",book);
     },
-    handleSave:function(component,event,helper)
+   
+    
+     handleSaveFeature:function(component,event,helper)
     {
-      
+      if (helper.validateRequired(component, event)) {
         var checkAllId = JSON.stringify(component.get("v.wrpOppOffDetails"));
         console.log(checkAllId);
       
@@ -214,42 +209,44 @@
             "WrapperString" : checkAllId,
             "recId" : component.get("v.pageReference").state.c__offeringId
         });
-        
+      
         action.setCallback(this,function(response){
             var state=response.getState();
-          
+        
             if(state==="SUCCESS"){
-                
-              /*  var toastEvent = $A.get("e.force:showToast");
+                 var toastEvent = $A.get("e.force:showToast");
                 toastEvent.setParams({
                     "type": "success",
                     "title": "Success!",
                     "message": "The record has been Save successfully."
                     
                 });
-                toastEvent.fire();*/
-               /* var navEvt = $A.get("e.force:navigateToSObject");
-                navEvt.setParams({
-                    "recordId": component.get("v.pageReference").state.c__offeringId
-                 
-                });
-                navEvt.fire();*/
+                toastEvent.fire();
+             
+             window.parent.location = '/' + component.get("v.pageReference").state.c__offeringId;
+                 //component.set("v.OppOfferinList",response.getReturnValue()); 
+            //  $A.enqueueAction(component.get('c.handleSave3'));  
             }
             
         });
         $A.enqueueAction(action);
-        
+      }   
     },
-     handleSaveFeature:function(component,event,helper)
+    
+     handleSave3:function(component,event,helper)
     {
-       
+     
+        if (helper.validateRequired(component, event)) {
+            var oppOferingLst = JSON.stringify(component.get("v.OppOfferinList"));
+              
         var checkAllId = JSON.stringify(component.get("v.wrpOppOfffeatureDetails"));
         console.log(checkAllId);
       
         var action=component.get("c.saveOfferingFeatures");
         action.setParams({ 
             "WrapperString" : checkAllId,
-            "recId" : component.get("v.pageReference").state.c__offeringId
+            "recId" : component.get("v.pageReference").state.c__offeringId,
+            "oppOferingLst":oppOferingLst
         });
         
         action.setCallback(this,function(response){
@@ -265,16 +262,13 @@
                     
                 });
                 toastEvent.fire();
-                var navEvt = $A.get("e.force:navigateToSObject");
-                navEvt.setParams({
-                    "recordId": component.get("v.pageReference").state.c__offeringId
-                 
-                });
-                navEvt.fire();
+             
+             window.parent.location = '/' + component.get("v.pageReference").state.c__offeringId;
+            
             }
             
         });
         $A.enqueueAction(action);
-        
+        }  
     },
 })
